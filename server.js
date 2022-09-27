@@ -18,6 +18,7 @@ app.use('/user-info', require('./routes/api/userInfo'));
 app.use('/recurring/data', require('./routes/api/recurringData'));
 app.use('/user-subs', require('./routes/api/userSubs'));
 app.use('/delete-subs', require('./routes/api/deleteSubs'));
+app.use('/check-subs-status', require('./routes/api/dailySubStatusCheck'));
 
 app.listen(PORT, () => {
     console.log(`App is listening to Port ${PORT}..!!`);

@@ -17,6 +17,10 @@ const SubsSchema = new mongoose.Schema({
         type: Date,
         required: true,
     },
+    endDate: {
+        type: Date,
+        required: true,
+    },
     customerProfileId: {
         type: String,
         required: true,

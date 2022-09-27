@@ -1,17 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const Plan = require('../../models/Plan');
+const getPlanData = require('../../helper/getPlanData');
 
-router.get('/', (req, res) => {
-    Plan.find({_id : req.query.id }, function (err, result){
-        if (err) {
-            throw err;
-        } else {
-            console.log(typeof(result));
-            res.send(result);
-        }
-    })
-
+router.get('/', async (req, res) => {
+    const Id = req.query.id;
+    var result = await getPlanData(Id);
+    res.send(result);
 });
 
 module.exports = router;

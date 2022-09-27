@@ -23,8 +23,13 @@ const onSubmit = async values => {
 
 const App = () => {
 
+  const queryParams = new URLSearchParams(window.location.search);
+    const currPlan = queryParams.get('currPlan');
+    console.log('currPlan', currPlan);
+
   const [amount, setAmount] = useState(null);
   const [timePeriod, setTimePeriod] = useState(null);
+  const [disabled, setDisabled] = useState(false);
 
   const { id, user } = useParams();
   console.log('id', id);
@@ -55,15 +60,14 @@ const App = () => {
     };
     const handleSubmit = (event) => {
         console.log('formData-->', formData);
-        axios.post(`/recurring?card_number=${formData.cardNumber}&expiry_date=${formData.expiryDate}&cvv=${formData.cvv}&amount=${amount}&timeperiod=${timePeriod}&id=${id}&user=${user}`).then((res) => {
+        setDisabled(true);
+        axios.post(`/recurring?card_number=${formData.cardNumber}&expiry_date=${formData.expiryDate}&cvv=${formData.cvv}&amount=${amount}&timeperiod=${timePeriod}&id=${id}&user=${user}&currPlan=${currPlan}`).then((res) => {
             console.log(res);
         }).catch((err) => {
             console.error(err);
-        })
-    }
+        });
 
-    const handleClick = (event) => {
-        navigate('/payment');
+        setTimeout(function(){navigate(`/user-info/${user}`)}, 5000);
     }
 
     return(
@@ -131,7 +135,7 @@ const App = () => {
               />
             </div>
             <div className="buttons">
-              <button type="submit" disabled={submitting}>
+              <button type="submit" disabled={disabled}>
                 {`Pay $${amount}`}
               </button>
               {/* <button

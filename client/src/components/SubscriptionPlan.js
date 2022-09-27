@@ -3,10 +3,12 @@ import { Link, useParams } from 'react-router-dom';
 import {VscCheck, VscChromeClose} from 'react-icons/vsc'
 
 const SubscriptionPlan = () => {
+    const queryParams = new URLSearchParams(window.location.search);
+    const currPlan = queryParams.get('currPlan');
+    console.log('currPlan', currPlan);
     const { id } = useParams();
   return (
     <>
-
         <div><h3>Choose the plan that's right for you.</h3></div>
         <div style={{ display: 'inline-flex'}}>
             <div>
@@ -39,7 +41,7 @@ const SubscriptionPlan = () => {
                     </tr>
                     <tr>
                         <td style={{ padding: '12px'}}></td>
-                        <td style={{ padding: '12px', border: '1px solid black', borderRadius: '10px', backgroundColor: 'black'}}><Link to={`/recurring/6321ad6445d1b99518bcfef8/${id}`} style={{ 'textDecoration' : 'none', color: 'white'}}> Upgrade </Link></td>
+                        <td style={{ padding: '12px', border: '1px solid black', borderRadius: '10px', backgroundColor: 'black'}}><Link to={`/recurring/6321ad6445d1b99518bcfef8/${id}?currPlan=${currPlan}`} style={{ 'textDecoration' : 'none', color: 'white'}}> Upgrade </Link></td>
                         <td style={{ padding: '12px', border: '1px solid black', borderRadius: '10px', backgroundColor: 'black'}}><Link to={`/recurring/6321ade645d1b99518bcfef9/${id}`} style={{ 'textDecoration' : 'none', color: 'white'}}> Upgrade </Link></td>
                         <td style={{ padding: '12px', border: '1px solid black', borderRadius: '10px', backgroundColor: 'black'}}><Link to={`/recurring/6321ae4e45d1b99518bcfefa/${id}`} style={{ 'textDecoration' : 'none', color: 'white'}}> Upgrade </Link></td>
                     </tr>

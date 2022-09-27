@@ -2,6 +2,7 @@
 
 const express = require('express');
 require('dotenv').config();
+var moment = require('moment');
 const router = express.Router();
 var ApiContracts = require('authorizenet').APIContracts;
 var ApiControllers = require('authorizenet').APIControllers;
@@ -29,6 +30,17 @@ router.post('/', (req, res) => {
         cardFields.cardNumber = req.query.card_number;
         cardFields.expiryDate = req.query.expiry_date;
 
+        // var endDate = new Date();
+        // var dd = String(endDate.getDate()).padStart(2, '0');
+        // var mm = String(endDate.getMonth() + 2).padStart(2, '0'); //January is 0!
+        // var yyyy = endDate.getFullYear();
+
+        // endDate = yyyy + '-' + mm + '-' + dd;
+        var endDate = moment(Date.now()).add(1, 'M').format('YYYY-MM-DD')
+        console.log('-------endDate-----', endDate);
+        // moment(Date.now()).format('YYYY-MM-DD')
+        // console.log("response.subscription.paymentSchedule.startDate", response.subscription.paymentSchedule.startDate);
+        
         var subsfield= {};
         subsfield.user = req.query.user;
         subsfield.planId = req.query.id;
@@ -36,17 +48,28 @@ router.post('/', (req, res) => {
         subsfield.customerProfileId = response.subscription.profile.customerProfileId;
         subsfield.customerPaymentProfileId = response.subscription.profile.paymentProfile.customerPaymentProfileId;
         subsfield.customerAddressId = response.subscription.profile.paymentProfile.customerAddressId;
-        subsfield.startDate = response.subscription.paymentSchedule.startDate;
+        // subsfield.startDate = response.subscription.paymentSchedule.startDate;
+        subsfield.startDate = moment(response.subscription.paymentSchedule.startDate).format('YYYY-MM-DD')
+        subsfield.endDate = endDate;
         subsfield.status = response.subscription.status;
         //subsfield.txnId = response.subscription.arbTransactions.arbTransaction.transId;
         subsfield.limit = '10';
         subsfield.limitUsed = '1';
         console.log('successfull');
+        console.log("subsfield.startDate", subsfield.startDate);
 
         var cartField = {};
         cartField.user = req.query.user;
         cartField.planId = req.query.id;
         cartField.totalAmount = response.subscription.amount;
+
+        Subs.findOneAndUpdate({subscriptionId : req.query.currPlan}, {$set : {status : "expired"}}, (err, result) => {
+            if(err){
+                console.error(err);
+            }else{
+                console.log(result);
+            }
+        })
 
         try {
             var subs = new Subs(subsfield);
@@ -131,6 +154,14 @@ router.post('/', (req, res) => {
 
     function createSubscription(callback){
         console.log('I am here');
+        /* var today = new Date();
+        var dd = String(today.getDate() + 1).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+        var yyyy = today.getFullYear();
+
+        today = yyyy + '-' + mm + '-' + dd; */
+        var today = moment(Date.now()).format('YYYY-MM-DD');
+        console.log('---------today-------', today);
         var merchantAuthenticationType = new ApiContracts.MerchantAuthenticationType();
         merchantAuthenticationType.setName(constants.apiLoginKey);
         merchantAuthenticationType.setTransactionKey(constants.transactionKey);
@@ -141,9 +172,9 @@ router.post('/', (req, res) => {
      
         var paymentScheduleType = new ApiContracts.PaymentScheduleType();
         paymentScheduleType.setInterval(intervalType);
-        paymentScheduleType.setStartDate('2022-10-13');
-        paymentScheduleType.setTotalOccurrences(12 * (req.query.timeperiod));
-        paymentScheduleType.setTrialOccurrences(1);
+        paymentScheduleType.setStartDate(today);
+        paymentScheduleType.setTotalOccurrences(1);
+        paymentScheduleType.setTrialOccurrences(0);
     
         var creditCard = new ApiContracts.CreditCardType();
         creditCard.setExpirationDate('2038-12');
