@@ -46,9 +46,9 @@ const App = () => {
         })
     }
 
-    const handleClick = (event) => {
+    /* const handleClick = (event) => {
         navigate('/recurring');
-    }
+    } */
 
     return(
   <Styles>
@@ -118,12 +118,12 @@ const App = () => {
               <button type="submit" disabled={submitting}>
                 Purchase
               </button>
-              <button
+              {/* <button
                 type="button"
                 onClick={handleClick}
               >
                 Recurring Subscription
-              </button>
+              </button> */}
             </div>
           </form>
           </>

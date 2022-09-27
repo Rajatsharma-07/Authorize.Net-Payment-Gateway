@@ -1,12 +1,28 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import {VscCheck, VscChromeClose} from 'react-icons/vsc'
+import axios from 'axios';
 
 const SubscriptionPlan = () => {
     const queryParams = new URLSearchParams(window.location.search);
     const currPlan = queryParams.get('currPlan');
+    const planId = queryParams.get('planId');
     console.log('currPlan', currPlan);
+    console.log('planId', planId);
     const { id } = useParams();
+    const [data, setData] = useState([]);
+
+    useEffect(() => {
+        axios.get('/get-all-subscriptions')
+            .then((res) => {
+                console.log('res', res);
+                setData(res.data);
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+    }, []);
+    console.log('data', data);
   return (
     <>
         <div><h3>Choose the plan that's right for you.</h3></div>
@@ -16,35 +32,23 @@ const SubscriptionPlan = () => {
             <table style={{ border: '1px solid black', borderRadius: '20px', backgroundColor: 'white'}}>
                 <tbody>
                     <tr>
-                        <td style={{ padding: '12px', borderBottom: '1px solid black'}}></td>
-                        <td style={{ padding: '12px', border: '2px solid black', borderRadius: '10px', backgroundColor: 'red', color: 'white'}}><h3>Standard</h3></td>
-                        <td style={{ padding: '12px', border: '2px solid black', borderRadius: '10px', backgroundColor: 'red', color: 'white'}}><h3>Standard Plus</h3></td>
-                        <td style={{ padding: '12px', border: '2px solid black', borderRadius: '10px', backgroundColor: 'red', color: 'white'}}><h3>Extended</h3></td>
+                        <td style={{ padding: '12px', borderBottom: '1px solid black'}}>Plan Name</td>
+                        <td style={{ padding: '12px', borderBottom: '1px solid black'}}>Amount</td>
+                        <td style={{ padding: '12px', borderBottom: '1px solid black'}}>Limit</td>
+                        <td style={{ padding: '12px', borderBottom: '1px solid black'}}>Time Period</td>
                     </tr>
-                    <tr>
-                        <td style={{ padding: '12px', borderBottom: '1px solid black'}}><h4>Price</h4></td>
-                        <td style={{ padding: '12px', borderBottom: '1px solid black'}}>$250</td>
-                        <td style={{ padding: '12px', borderBottom: '1px solid black'}}>$2000</td>
-                        <td style={{ padding: '12px', borderBottom: '1px solid black'}}>$4000</td>
-                    </tr>
-                    <tr>
-                        <td style={{ padding: '12px', borderBottom: '1px solid black'}}><h4>Limit Per Month</h4></td>
-                        <td style={{ padding: '12px', borderBottom: '1px solid black'}}>10</td>
-                        <td style={{ padding: '12px', borderBottom: '1px solid black'}}>100</td>
-                        <td style={{ padding: '12px', borderBottom: '1px solid black'}}>Unlimited</td>
-                    </tr>
-                    <tr>
-                        <td style={{ padding: '12px', borderBottom: '1px solid black'}}><h4>Cancel At Anytime</h4></td>
-                        <td style={{ padding: '12px', borderBottom: '1px solid black'}}><VscCheck /></td>
-                        <td style={{ padding: '12px', borderBottom: '1px solid black'}}><VscChromeClose /></td>
-                        <td style={{ padding: '12px', borderBottom: '1px solid black'}}><VscChromeClose /></td>
-                    </tr>
-                    <tr>
-                        <td style={{ padding: '12px'}}></td>
-                        <td style={{ padding: '12px', border: '1px solid black', borderRadius: '10px', backgroundColor: 'black'}}><Link to={`/recurring/6321ad6445d1b99518bcfef8/${id}?currPlan=${currPlan}`} style={{ 'textDecoration' : 'none', color: 'white'}}> Upgrade </Link></td>
-                        <td style={{ padding: '12px', border: '1px solid black', borderRadius: '10px', backgroundColor: 'black'}}><Link to={`/recurring/6321ade645d1b99518bcfef9/${id}`} style={{ 'textDecoration' : 'none', color: 'white'}}> Upgrade </Link></td>
-                        <td style={{ padding: '12px', border: '1px solid black', borderRadius: '10px', backgroundColor: 'black'}}><Link to={`/recurring/6321ae4e45d1b99518bcfefa/${id}`} style={{ 'textDecoration' : 'none', color: 'white'}}> Upgrade </Link></td>
-                    </tr>
+                    {data && data.map((plan) => {
+                        if(planId != plan._id)
+                        return(
+                            <tr>
+                                <td style={{ padding: '12px', border: '2px solid black', borderRadius: '10px', backgroundColor: 'red', color: 'white'}}>{plan.name}</td>
+                                <td style={{ padding: '12px', borderBottom: '1px solid black'}}>{`$${plan.amount}`}</td>
+                                <td style={{ padding: '12px', borderBottom: '1px solid black'}}>{plan.limit}</td>
+                                <td style={{ padding: '12px', borderBottom: '1px solid black'}}>{`${plan.timePeriod} month`}</td>
+                                <td style={{ padding: '12px', border: '1px solid black', borderRadius: '10px', backgroundColor: 'black'}}><Link to={`/recurring/${plan._id}/${id}?currPlan=${currPlan}&timePeriod=${plan.timePeriod}&occurrences=${plan.occurrences}`} style={{ 'textDecoration' : 'none', color: 'white'}}> Upgrade </Link></td>
+                            </tr>
+                        )
+                    })}
                 </tbody>
             </table>
             </div>

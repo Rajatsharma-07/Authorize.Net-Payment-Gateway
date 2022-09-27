@@ -165,15 +165,18 @@ router.post('/', (req, res) => {
         var merchantAuthenticationType = new ApiContracts.MerchantAuthenticationType();
         merchantAuthenticationType.setName(constants.apiLoginKey);
         merchantAuthenticationType.setTransactionKey(constants.transactionKey);
+
+        var timeLimit = req.query.timeLimit;
+        var occurrences = req.query.occurrences;
     
         var intervalType = new ApiContracts.PaymentScheduleType.Interval();
-        intervalType.setLength(1);
+        intervalType.setLength(timeLimit);
         intervalType.setUnit(ApiContracts.ARBSubscriptionUnitEnum.MONTHS);
      
         var paymentScheduleType = new ApiContracts.PaymentScheduleType();
         paymentScheduleType.setInterval(intervalType);
         paymentScheduleType.setStartDate(today);
-        paymentScheduleType.setTotalOccurrences(1);
+        paymentScheduleType.setTotalOccurrences(occurrences);
         paymentScheduleType.setTrialOccurrences(0);
     
         var creditCard = new ApiContracts.CreditCardType();

@@ -15,7 +15,7 @@ function App() {
           <Route path="user-info/:id" element={<UserInfo />} />  
           <Route path="subscription-plans/:id" element={<SubscriptionPlan />} />
           <Route path="recurring/:id/:user" element={<Recurring />} />
-          <Route path="payment" element={<PaymentForm />} />  
+          <Route path="payment/:user" element={<PaymentForm />} />  
       </Routes>
     </BrowserRouter>
     </div>

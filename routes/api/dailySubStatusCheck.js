@@ -15,14 +15,6 @@ router.get('/', (req, res) => {
             }
             console.log(d.startDate)
         })
-        // else{
-        //     for(let i = 0; i < data.length; i++){
-        //         if(data[i].startDate > data[i].endDate){
-        //             // data[i].status = 'expired';
-
-        //         }
-        //     }
-        // }
     })
 });
 
