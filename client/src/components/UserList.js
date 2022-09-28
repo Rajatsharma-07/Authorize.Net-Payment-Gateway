@@ -34,12 +34,12 @@ const UserList = () => {
     
   return (
     <>
-    <div>
+    <div style={{display : 'inline-flex'}}>
     <h1>User List</h1>
     </div>
     <div>
       {/* <div>{JSON.stringify(response)}</div> */}
-      <table style={{"borderWidth":"1px", 'borderColor':"#aaaaaa", 'borderStyle':'solid', 'marginLeft': '300px'}}>
+      <table style={{"borderWidth":"1px", 'borderColor':"#aaaaaa", 'borderStyle':'solid', display: 'inline-flex'}}>
         <tbody>
           {Object.keys(response).map((key, index) => {
             return(

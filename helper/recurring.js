@@ -78,6 +78,8 @@ const recurring = (cardNumber, expiryDate, cvv, amount, timePeriod, planId, user
             }
         })
 
+        try{
+
             var subs = new Subs(subsfield);
             subs.save();
             var cart = new Cart(cartField);
@@ -85,6 +87,9 @@ const recurring = (cardNumber, expiryDate, cvv, amount, timePeriod, planId, user
             var card = new Card(cardFields);
             card.save();
             console.log('successfull');
+        } catch(err){
+            console.error(err);
+        }
         
     };
 
@@ -198,7 +203,7 @@ const recurring = (cardNumber, expiryDate, cvv, amount, timePeriod, planId, user
         var customer = new ApiContracts.CustomerType();
         customer.setType(ApiContracts.CustomerTypeEnum.INDIVIDUAL);
         customer.setId(utils.getRandomString('Id'));
-        customer.setEmail('rajats1@appcino.com');
+        customer.setEmail('pushpendrar@appcino.com');
         customer.setPhoneNumber('9079013441');
         customer.setFaxNumber('1232122122');
         customer.setTaxId('911011011');

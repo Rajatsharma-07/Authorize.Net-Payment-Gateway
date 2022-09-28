@@ -28,7 +28,7 @@ const UserInfo = () => {
     
    <div>
       <h2>User Information</h2>
-      <table style={{ 'marginLeft': '450px'}}>
+      <table style={{ display: 'inline-flex'}}>
         <tbody>
         {userData && Object.keys(userData.data).map((key, index) => {
             return(

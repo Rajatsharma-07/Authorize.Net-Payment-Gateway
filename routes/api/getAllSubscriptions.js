@@ -5,6 +5,7 @@ const getSubsDetails = require('../../helper/getSubsDetails');
 
 router.get('/', async (req, res) => {
     var result = await getSubsDetails();
+    console.log('result', result);
     res.send(result);
 });
 

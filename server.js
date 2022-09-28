@@ -10,7 +10,7 @@ const PORT = process.env.PORT || 5000;
 app.get('/', (req, res) => {
     res.send('Api is running');
 });
-
+//susbs
 app.use('/recurring', require('./routes/api/payment'));
 app.use('/payment', require('./routes/api/chargeCreditCard'));
 app.use('/user', require('./routes/api/users'));
