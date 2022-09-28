@@ -8,13 +8,7 @@ router.put('/', (req, res) => {
     const limit = req.query.limit;
     console.log('id', id);
     console.log('limit', limit);
-    Subs.findOneAndUpdate({subscriptionId : id}, {$set : {limitUsed : limit }}, (err, result) => {
-        if(err){
-            console.error(err);
-        }else{
-            res.send(result);
-        }
-    })
+    addPatient(id, limit);
 });
 
 module.exports = router;

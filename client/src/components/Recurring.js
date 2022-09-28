@@ -26,8 +26,11 @@ const App = () => {
   const queryParams = new URLSearchParams(window.location.search);
     const currPlan = queryParams.get('currPlan');
     const timeLimit = queryParams.get('timePeriod');
+    const limit = queryParams.get('limit');
     const occurrences = queryParams.get('occurrences');
+    const remainingBalance = queryParams.get('remainingBalance');
     console.log('currPlan', currPlan);
+    console.log('remainingBalance', remainingBalance);
     console.log('timeLimit', timeLimit);
 
   const [amount, setAmount] = useState(null);
@@ -64,7 +67,7 @@ const App = () => {
     const handleSubmit = (event) => {
         console.log('formData-->', formData);
         setDisabled(true);
-        axios.post(`/recurring?card_number=${formData.cardNumber}&expiry_date=${formData.expiryDate}&cvv=${formData.cvv}&amount=${amount}&timeperiod=${timePeriod}&id=${id}&user=${user}&currPlan=${currPlan}&timeLimit=${timeLimit}&occurrences=${occurrences}`).then((res) => {
+        axios.post(`/recurring?card_number=${formData.cardNumber}&expiry_date=${formData.expiryDate}&cvv=${formData.cvv}&amount=${amount}&timeperiod=${timePeriod}&id=${id}&user=${user}&currPlan=${currPlan}&timeLimit=${timeLimit}&occurrences=${occurrences}&limit=${limit}&remainingBalance=${remainingBalance}`).then((res) => {
             console.log(res);
         }).catch((err) => {
             console.error(err);

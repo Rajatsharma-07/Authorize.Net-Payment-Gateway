@@ -16,9 +16,6 @@ router.get('/', async (req, res) =>{
     const Id = req.query.id;
     var result = await getUserSubs(Id);
     console.log('-----------result-----------', result.length);
-    for(let i = 0; i < result.length; i++){
-        var maxvalue = result[result.length - 1];
-    }
     res.send(result);
 });
 

@@ -7,7 +7,9 @@ const SubscriptionPlan = () => {
     const queryParams = new URLSearchParams(window.location.search);
     const currPlan = queryParams.get('currPlan');
     const planId = queryParams.get('planId');
+    const remainingBalance = queryParams.get('remainingBalance');
     console.log('currPlan', currPlan);
+    console.log('remainingBalance', remainingBalance);
     console.log('planId', planId);
     const { id } = useParams();
     const [data, setData] = useState([]);
@@ -45,7 +47,7 @@ const SubscriptionPlan = () => {
                                 <td style={{ padding: '12px', borderBottom: '1px solid black'}}>{`$${plan.amount}`}</td>
                                 <td style={{ padding: '12px', borderBottom: '1px solid black'}}>{plan.limit}</td>
                                 <td style={{ padding: '12px', borderBottom: '1px solid black'}}>{`${plan.timePeriod} month`}</td>
-                                <td style={{ padding: '12px', border: '1px solid black', borderRadius: '10px', backgroundColor: 'black'}}><Link to={`/recurring/${plan._id}/${id}?currPlan=${currPlan}&timePeriod=${plan.timePeriod}&occurrences=${plan.occurrences}`} style={{ 'textDecoration' : 'none', color: 'white'}}> Upgrade </Link></td>
+                                <td style={{ padding: '12px', border: '1px solid black', borderRadius: '10px', backgroundColor: 'black'}}><Link to={`/recurring/${plan._id}/${id}?currPlan=${currPlan}&timePeriod=${plan.timePeriod}&occurrences=${plan.occurrences}&limit=${plan.limit}&remainingBalance=${remainingBalance}`} style={{ 'textDecoration' : 'none', color: 'white'}}> Upgrade </Link></td>
                             </tr>
                         )
                     })}

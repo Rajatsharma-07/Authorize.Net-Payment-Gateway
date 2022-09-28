@@ -14,6 +14,7 @@ const UserSubscription = () => {
     const [limit, setLimit] = useState(0);
     const [disabled, setDisabled] = useState(false);
     const [patientAdded, setPatientAdded] = useState(false);
+    const [remainingLimit, setRemainingLimit] = useState(0);
 
 
     useEffect(() => {
@@ -28,6 +29,8 @@ const UserSubscription = () => {
                 setAvailableLimit(availLimit);
                 var limitUsed = res.data[0].limitUsed;
                 setLimit(limitUsed);
+
+                // setRemainingLimit(availLimit - limitUsed);
 
                 // var subId = res.data[0].subscriptionId
                 // var sdate = res.data[0].startDate.split('-')[1];
@@ -70,19 +73,27 @@ const UserSubscription = () => {
         console.log('limitdfg---->', limit);
     }
     useEffect(()=> {
-        if(limit == 10){
+        if(remainingLimit === 0){
             setDisabled(true);
+        }else{
+            setDisabled(false);
         }
         console.log("Need to update limit to ", limit);
+        // console.log("Need to know the remaining balance ", remainingLimit);
         if(data.length > 0)
         axios.put(`/add-patient?id=${data[0].subscriptionId}&limit=${limit}`).then((res)=>{console.log(res)}).catch((err)=>{console.error(err)});
         // axios.put(`/add-patient?id=${data[0].subscriptionId}&limit=${limit}`).then((res)=>{console.log(res)}).catch((err)=>{console.error(err)});
-    }, [limit, patientAdded,data ]);
+    }, [limit, patientAdded, data, remainingLimit ]);
+    useEffect(() => {
+        setRemainingLimit(availableLimit-limit);
+    },[availableLimit, limit]);
+    useEffect(()=>{console.log("Need to know the remaining balance ", remainingLimit)},[remainingLimit]);
 
   return (
     <>
     <div><h3>Active Subsciption</h3></div>
-    <div style={{ display: 'inline-flex'}}>
+    <div style={{ display: 'inline-block', justifyContent : 'space-evenly'}}>
+    <div>
         <table style={{border : '1px solid black'}}>
             <tbody>
                 <tr>
@@ -91,15 +102,6 @@ const UserSubscription = () => {
                     <td style={{border : '1px solid black'}}>End Date</td>
                     <td style={{border : '1px solid black'}}>Limit</td>
                     <td style={{border : '1px solid black'}}>Limit Used</td>
-                    <td style={{border : '1px solid black', backgroundColor: 'green'}}><button type='submit' disabled={disabled} style={{border : 'none', backgroundColor: 'green', color: 'white'}} onClick={() => {
-    const confirmBox = window.confirm(
-      "Add One Patient?"
-    )
-    console.log(confirmBox);
-    if (confirmBox === true) {
-      handlePatients();
-    }
-  }}>Add</button></td>
                 </tr>
                 {data && Object.keys(data).map((key, index) => {
                     return(
@@ -116,11 +118,22 @@ const UserSubscription = () => {
             </tbody>
         </table>
     </div>
+    {(!data) ? <div></div> : <div><button type='submit' disabled={disabled} style={{border : 'none', backgroundColor: 'green', color: 'white', height : '25px'}} onClick={() => {
+    const confirmBox = window.confirm(
+      "Add One Patient?"
+    )
+    console.log(confirmBox);
+    if (confirmBox === true) {
+      handlePatients();
+    }
+  }}>Add Patient</button></div>}
+    
+    </div>
     {(!data) ? <><div><h4> Choose the plan that's right for you. </h4></div>
-    <div><button style={{border: 'none', backgroundColor : 'red',  height: '25px'}}><Link to={`/subscription-plans/${id}`} style={{textDecoration : 'none', color: 'white'}}>Choose Plan</Link></button></div></> :  ( data && limit >= availableLimit) ? <><div><h4> Your monthly limit is exhausted. Update to upgrade your limit</h4></div>
-    <div><button style={{border: 'none', backgroundColor : 'red',  height: '25px'}}><Link to={`/subscription-plans/${id}?currPlan=${data[0].subscriptionId}&planId=${data[0].planId}`} style={{textDecoration : 'none', color: 'white'}}>Update Plan</Link></button></div><div><button style={{border: 'none', backgroundColor : 'red',  height: '25px'}}><Link to={`/subscription-plans/${id}`} style={{textDecoration : 'none', color: 'white'}}>Add Patients Now</Link></button></div></> : (startDate >= endDate) ?  <><div><h4> Your subscription is expired</h4></div>
-    <div><button style={{border: 'none', backgroundColor : 'red',  height: '25px'}}><Link to={`/subscription-plans/${id}`} style={{textDecoration : 'none', color: 'white'}}>Update Plan</Link></button></div></> : <><div><h4>Want to change plan?</h4></div>
-    <div><button style={{border: 'none', backgroundColor : 'red',  height: '25px'}}><Link to={`/subscription-plans/${id}?currPlan=${data[0].subscriptionId}&planId=${data[0].planId}`} style={{textDecoration : 'none', color: 'white'}}>Choose Plan</Link></button></div></>}
+    <div><button style={{border: 'none', backgroundColor : 'red',  height: '25px'}}><Link to={`/subscription-plans/${id}?remainingBalance=0`} style={{textDecoration : 'none', color: 'white'}}>Choose Plan</Link></button></div></> :  ( data && limit >= availableLimit) ? <><div><h4> Your monthly limit is exhausted. Update to upgrade your limit</h4></div>
+    <div><button style={{border: 'none', backgroundColor : 'red',  height: '25px'}}><Link to={`/subscription-plans/${id}?currPlan=${data[0].subscriptionId}&planId=${data[0].planId}&remainingBalance=0`} style={{textDecoration : 'none', color: 'white'}}>Update Plan</Link></button></div><div><h4> Add one patient Immediately</h4></div><div><button style={{border: 'none', backgroundColor : 'red',  height: '25px'}}><Link to={`/payment/${id}?amount=50&currPlan=${data[0].subscriptionId}`} style={{textDecoration : 'none', color: 'white'}}>Add Patients Now</Link></button></div></> : (startDate >= endDate) ?  <><div><h4> Your subscription is expired</h4></div>
+    <div><button style={{border: 'none', backgroundColor : 'red',  height: '25px'}}><Link to={`/subscription-plans/${id}&remainingBalance=0`} style={{textDecoration : 'none', color: 'white'}}>Update Plan</Link></button></div></> : <><div><h4>Want to change plan?</h4></div>
+    <div><button style={{border: 'none', backgroundColor : 'red',  height: '25px'}}><Link to={`/subscription-plans/${id}?currPlan=${data[0].subscriptionId}&planId=${data[0].planId}&remainingBalance=${remainingLimit}`} style={{textDecoration : 'none', color: 'white'}}>Choose Plan</Link></button></div></>}
     
     </>
   )

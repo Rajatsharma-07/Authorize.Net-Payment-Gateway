@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { render } from 'react-dom'
 import axios from 'axios';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { FormContainer, FormComponent, AcceptHosted } from 'react-authorize-net';
 import { Flex, Box, Text, Heading } from "rebass";
 import Styles from './Styles'
@@ -22,8 +22,16 @@ const onSubmit = async values => {
 } */
 
 const App = () => {
+  const { id } = useParams();
+  console.log('id', id);
+  const [amount, setAmount] = useState(0);
+  const queryParams = new URLSearchParams(window.location.search);
+  const amounts = queryParams.get('amount');
+  console.log('amount', amounts);
+  const [disabled, setDisabled] = useState(false);
     useEffect(() => {
       console.log("Payment form mounted");
+      setAmount(amounts);
     }, []);
     let clientKey = 'bizdev05';
     let apiLoginId = '4kJd237rZu59qAZd';
@@ -39,11 +47,14 @@ const App = () => {
     };
     const handleSubmit = (event) => {
         console.log('formData-->', formData);
-        axios.post(`/payment?card_number=${formData.cardNumber}&expiry_date=${formData.expiryDate}&cvv=${formData.cvv}`).then((res) => {
+        setDisabled(true);
+        axios.post(`/payment?card_number=${formData.cardNumber}&expiry_date=${formData.expiryDate}&cvv=${formData.cvv}&amount=${amount}&userId=${id}`).then((res) => {
             console.log(res);
         }).catch((err) => {
             console.error(err);
-        })
+        });
+
+      setTimeout(function(){navigate(`/user-info/${id}`)}, 5000);
     }
 
     /* const handleClick = (event) => {
@@ -115,8 +126,8 @@ const App = () => {
               />
             </div>
             <div className="buttons">
-              <button type="submit" disabled={submitting}>
-                Purchase
+              <button type="submit" disabled={disabled}>
+                {`Pay $${amount}`}
               </button>
               {/* <button
                 type="button"
